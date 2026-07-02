@@ -37,7 +37,7 @@ class Tetromino {
         tetromino shape;
         bool falling = false;
 
-        void insert(int c, int r) {
+        bool insert(int c, int r) {
             int xov = c, yov = r;
             matrix_tmp = matrix;
             for(const vector<bool> &row : shape) {
@@ -49,7 +49,7 @@ class Tetromino {
                         } else {
                             matrix_tmp = matrix;
                             insert(x, y);
-                            return;
+                            return false;
                         }
                     }
                     i++;
@@ -58,6 +58,7 @@ class Tetromino {
             }
             x = xov;
             y = yov;
+            return true;
         }
 
         void init() {
@@ -76,6 +77,19 @@ class Tetromino {
                     insert(x+1 , y);
                     break;
             }
+        }
+
+        void rotate() {
+            tetromino rotated = shape, tmp = shape;
+
+            for(vector<bool> &row : shape) {
+                pos i = 0;
+                for(bool state : row) {
+                    rotated[i][shape.size()-1-i] = 1;
+                }
+            }
+            
+            shape = rotated;
         }
 };
 
@@ -128,6 +142,9 @@ int main() {
                         break;
                     case 'd':
                         tetro.move('R');
+                        break;
+                    case 'w':
+                        tetro.rotate();
                         break;
                 }
             }
